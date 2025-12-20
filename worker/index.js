@@ -2,17 +2,26 @@ const keys = require('./keys');
 const redis = require('redis');
 
 const redisClient = redis.createClient({
-    socket: {
-    host: keys.redisHost,
-    port: keys.redisPort,
-    reconnectStrategy: () => 1000,
+  socket: {
+      host: keys.redisHost,
+      port: keys.redisPort,
+      reconnectStrategy: (retries) => {
+        return Math.min(retries * 50, 500);
+      },
     },
+}); 
+
+
+redisClient.on('error', (err) => {
+  console.error('Redis Client Error', err);
 });
 
 const sub = redisClient.duplicate();
 
-redisClient.connect().catch(console.error);
-sub.connect().catch(console.error);
+(async () => {
+    await redisClient.connect();
+    await sub.connect();
+})().catch(console.error);
 
 function fib(index) {
     if (index < 2) return 1;
@@ -22,5 +31,5 @@ function fib(index) {
 
 sub.subscribe('insert', (message) => {
     console.log('Subscription to insert channel established.');
-    redisClient.hset('values', message, fib(parseInt(message)));
+    redisClient.hSet('values', message, fib(parseInt(message)));
 });
