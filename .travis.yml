@@ -13,3 +13,9 @@ after_success:
   - docker build -t prashantbist/complexserver:latest  ./server
   - docker build -t prashantbist/complexworker:latest  ./worker
   - docker build -t prashantbist/complexnginx:latest  ./nginx
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push prashantbist/complexclient:latest
+  - docker push prashantbist/complexserver:latest
+  - docker push prashantbist/complexworker:latest
+  - docker push prashantbist/complexnginx:latest
