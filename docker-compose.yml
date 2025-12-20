@@ -15,6 +15,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile.dev
+    image: prashantbist/complexclient:latest
     ports:
       - "3000:3000"
     volumes:
@@ -24,6 +25,7 @@ services:
     build:
       context: ./worker
       dockerfile: Dockerfile.dev
+    image: prashantbist/complexworker:latest
     volumes:
       - /app/node_modules
       - ./worker:/app  
@@ -34,6 +36,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.dev
+    image: prashantbist/complexserver:latest
     ports:
       - "5000:5000"
     volumes:
@@ -52,5 +55,6 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile.dev
+    image: prashantbist/complexnginx:latest
     ports:
       - "3050:80"
